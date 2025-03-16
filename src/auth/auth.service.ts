@@ -39,12 +39,18 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log(user);
     const payload = { account: user.account, sub: user.id };
     return {
       id: user.id,
       account: user.account,
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async validateJwtUser(userId: number) {
+    const user = await this.userService.findByUserId(userId);
+    if (!user) throw new UnauthorizedException('User not found');
+    const currentUser = { id: user.id };
+    return currentUser;
   }
 }

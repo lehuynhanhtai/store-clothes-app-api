@@ -27,7 +27,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
     // Verify the password using argon2
-    const isPasswordValid = await verify(user.password, password);
+    const isPasswordValid = await verify(user.password || '', password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
     }

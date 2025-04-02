@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { hash } from 'argon2';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,33 @@ export class UserService {
         ...user,
         password: hashedPassword,
       },
+    });
+  }
+
+  async findAll(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    return await this.prisma.user.findMany({
+      skip,
+      take: limit,
+    });
+  }
+
+  async findOne(id: number) {
+    return await this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
+  }
+
+  async remove(id: number) {
+    return await this.prisma.user.delete({
+      where: { id },
     });
   }
 
